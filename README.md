@@ -6,7 +6,7 @@ Based on [char-rnn-tensorflow](https://github.com/sherjilozair/char-rnn-tensorfl
 
 ## Requirements
 
-- Set up a python environment with tensorflow installed. [More detailed instructions here](../)
+- Set up a python environment with tensorflow installed. [More detailed instructions here](https://ml5js.org/docs/training-setup.html). You can also follow this [video tutorial about Python virtualenv](https://youtu.be/nnhjvHYRsmM).
 
 - If you are familiar with Docker, you can also use this  ~~[container]()~~ (soon!)
 
