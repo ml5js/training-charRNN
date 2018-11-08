@@ -69,7 +69,7 @@ python train.py --data_dir=./bronte \
 Once the model is ready, you'll just need to point to it in your ml5 sketch:
 
 ```javascript
-const lstm = new ml5.LSTMGenerator('./models/your_new_model');
+const lstm = new ml5.charRNN('./models/your_new_model');
 ```
 
 That's it!
