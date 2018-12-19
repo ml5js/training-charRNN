@@ -4,6 +4,8 @@ Multi-layer Recurrent Neural Networks (LSTM, RNN) for character-level language m
 
 Based on [char-rnn-tensorflow](https://github.com/sherjilozair/char-rnn-tensorflow).
 
+[Here](https://www.youtube.com/watch?v=xfuVcfwtEyw) is a video to help you get started with training LSTM with [Spell](https://www.spell.run/)
+
 ## Requirements
 
 - Set up a python environment with tensorflow installed. [More detailed instructions here](https://ml5js.org/docs/training-setup.html). You can also follow this [video tutorial about Python virtualenv](https://youtu.be/nnhjvHYRsmM).
