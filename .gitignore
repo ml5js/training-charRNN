@@ -1,3 +1,7 @@
 /bronte
 
+.idea
 data
+models
+logs
+checkpoints
