@@ -32,11 +32,11 @@ tf.logging.set_verbosity(tf.logging.ERROR)
 def main():
     parser = argparse.ArgumentParser(
                         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--data_dir', type=str, default='data/tinyshakespeare',
+    parser.add_argument('--data_dir', type=str, default='data',
                         help='data directory containing input.txt')
     parser.add_argument('--save_model', type=str, default='models',
                         help='directory to store the ml5js model')
-    parser.add_argument('--save_checkpoints', type=str, default='checkpoints',
+    parser.add_argument('--save_checkpoints', type=str, default='checkpoints/',
                         help='directory to store checkpointed models')
     parser.add_argument('--log_dir', type=str, default='logs',
                         help='directory to store tensorboard logs')

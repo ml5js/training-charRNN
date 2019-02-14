@@ -19,17 +19,18 @@ At the moment, Tensorflow requires the `3.6.5` version of python, it won't insta
 - Move to the `training-lstm` directory on your disk.
 - From the newly installed Anaconda command prompt, create a new environnement named `tensorflow_env`, activate it, install the good version of python, then install tensorflow.
 
-```python
-$ conda create -n tensorflow_env
-$ conda activate tensorflow_env
-$ conda install python=3.6.5
-$ pip install tensorflow
+```
+conda create -n tensorflow_env
+conda activate tensorflow_env
+conda install python=3.6.5
+pip install tensorflow
 ```
 
 ## Usage 
 
- 1. `$ conda activate tensorflow_env`
+0. Add a `input.txt` file in the data directory as the root of the project. **The file has to be encoded in UTF-8**.
+1. Inside the Anaconda command prompt, run `conda activate tensorflow_env`
  
-    > `tensorflow` refers to the environnement previously created with Anaconda.
+    > `tensorflow_env` refers to the environnement previously created with Anaconda.
  
- 2. `$ python train.py`
+2. `python train.py`
