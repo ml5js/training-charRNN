@@ -1,39 +1,39 @@
 """
-Multi-layer Recurrent Neural Networks (LSTM, RNN) for 
-character-level language models in Python using Tensorflow 
+Multi-layer Recurrent Neural Networks (LSTM, RNN) for
+character-level language models in Python using Tensorflow
 and modified to work with tensorflow.js and ml5.js
 
 Based on https://github.com/sherjilozair/char-rnn-tensorflow.
- 
+
 This script will train and dump the checkpoints to javascript
 """
 
 from __future__ import print_function
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
-import tensorflow as tf
-import logging
-
-import argparse
-import time
-import glob
-from six.moves import cPickle
-
-from utils import TextLoader
-from model import Model
-from pprint import pprint
-
-from six import text_type
 from json_checkpoint_vars import dump_checkpoints
+from six import text_type
+from pprint import pprint
+from model import Model
+from utils import TextLoader
+from six.moves import cPickle
+import glob
+import time
+import argparse
+import logging
+import tensorflow as tf
+import os
+import re
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
 
 # hide logs
 tf.logging.set_verbosity(tf.logging.ERROR)
 
+
 def main():
     parser = argparse.ArgumentParser(
-                        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--data_dir', type=str, default='data/tinyshakespeare',
-                        help='data directory containing input.txt')
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('--data_path', type=str, default='data/input.txt',
+                        help='file path to .txt file')
     parser.add_argument('--save_model', type=str, default='models',
                         help='directory to store the ml5js model')
     parser.add_argument('--save_checkpoints', type=str, default='checkpoints',
@@ -79,29 +79,34 @@ def main():
     args = parser.parse_args()
     train(args)
 
+
 def getModelVocab(path, model_name):
     # print("Getting the model's vocabulary")
     with open(os.path.join(path, model_name, 'chars_vocab.pkl'), 'rb') as f:
         chars, vocab = cPickle.load(f)
     return vocab
 
+
 def train(args):
     all_start = time.time()
-    model_name = args.data_dir.split("/")[-1]
+    model_name = re.split('[/.]', args.data_path)[-2]
     # make a dir to store checkpoints
     args.save_dir = os.path.join(args.save_checkpoints, model_name)
     if not os.path.exists(args.save_dir):
         os.makedirs(args.save_dir)
-    
-    data_loader = TextLoader(args.data_dir, args.batch_size, args.seq_length)
+
+    data_loader = TextLoader(args.data_path, args.batch_size, args.seq_length)
     args.vocab_size = data_loader.vocab_size
 
     # check compatibility if training is continued from previously saved model
     if args.init_from is not None:
         # check if all necessary files exist
-        assert os.path.isdir(args.init_from)," %s must be a a path" % args.init_from
-        assert os.path.isfile(os.path.join(args.init_from,"config.pkl")),"config.pkl file does not exist in path %s"%args.init_from
-        assert os.path.isfile(os.path.join(args.init_from,"chars_vocab.pkl")),"chars_vocab.pkl.pkl file does not exist in path %s" % args.init_from
+        assert os.path.isdir(
+            args.init_from), " %s must be a a path" % args.init_from
+        assert os.path.isfile(os.path.join(args.init_from, "config.pkl")
+                              ), "config.pkl file does not exist in path %s" % args.init_from
+        assert os.path.isfile(os.path.join(args.init_from, "chars_vocab.pkl")
+                              ), "chars_vocab.pkl.pkl file does not exist in path %s" % args.init_from
         ckpt = tf.train.get_checkpoint_state(args.init_from)
         assert ckpt, "No checkpoint found"
         assert ckpt.model_checkpoint_path, "No model path found in checkpoint"
@@ -111,13 +116,14 @@ def train(args):
             saved_model_args = cPickle.load(f)
         need_be_same = ["model", "rnn_size", "num_layers", "seq_length"]
         for checkme in need_be_same:
-            assert vars(saved_model_args)[checkme]==vars(args)[checkme],"Command line argument and saved model disagree on '%s' "%checkme
+            assert vars(saved_model_args)[checkme] == vars(args)[
+                checkme], "Command line argument and saved model disagree on '%s' " % checkme
 
         # open saved vocab/dict and check if vocabs/dicts are compatible
         with open(os.path.join(args.init_from, 'chars_vocab.pkl'), 'rb') as f:
             saved_chars, saved_vocab = cPickle.load(f)
-        assert saved_chars==data_loader.chars, "Data and loaded model disagree on character set!"
-        assert saved_vocab==data_loader.vocab, "Data and loaded model disagree on dictionary mappings!"
+        assert saved_chars == data_loader.chars, "Data and loaded model disagree on character set!"
+        assert saved_vocab == data_loader.vocab, "Data and loaded model disagree on dictionary mappings!"
 
     if not os.path.isdir(args.save_dir):
         os.makedirs(args.save_dir)
@@ -132,7 +138,7 @@ def train(args):
         # instrument for tensorboard
         summaries = tf.summary.merge_all()
         writer = tf.summary.FileWriter(
-                os.path.join(args.log_dir, time.strftime("%Y-%m-%d-%H-%M-%S")))
+            os.path.join(args.log_dir, time.strftime("%Y-%m-%d-%H-%M-%S")))
         writer.add_graph(sess.graph)
 
         sess.run(tf.global_variables_initializer())
@@ -141,7 +147,8 @@ def train(args):
         if args.init_from is not None:
             saver.restore(sess, ckpt.model_checkpoint_path)
         for e in range(args.num_epochs):
-            sess.run(tf.assign(model.lr, args.learning_rate * (args.decay_rate ** e)))
+            sess.run(tf.assign(model.lr, args.learning_rate *
+                               (args.decay_rate ** e)))
             data_loader.reset_batch_pointer()
             state = sess.run(model.initial_state)
             for b in range(data_loader.num_batches):
@@ -153,7 +160,8 @@ def train(args):
                     feed[h] = state[i].h
 
                 # instrument for tensorboard
-                summ, train_loss, state, _ = sess.run([summaries, model.cost, model.final_state, model.train_op], feed)
+                summ, train_loss, state, _ = sess.run(
+                    [summaries, model.cost, model.final_state, model.train_op], feed)
                 writer.add_summary(summ, e * data_loader.num_batches + b)
 
                 end = time.time()
@@ -166,14 +174,17 @@ def train(args):
                 if (e * data_loader.num_batches + b) % args.save_every == 0\
                         or (e == args.num_epochs-1 and b == data_loader.num_batches-1):
                     # remove previous checkpoints
-                    current_checkpoints = [f for f in os.listdir(args.save_dir) if os.path.isfile(os.path.join(args.save_dir, f))]
+                    current_checkpoints = [f for f in os.listdir(
+                        args.save_dir) if os.path.isfile(os.path.join(args.save_dir, f))]
                     for f in current_checkpoints:
                         if model_name in f:
                             os.remove(os.path.join(args.save_dir, f))
                     # save for the last result
                     checkpoint_path = os.path.join(args.save_dir, model_name)
-                    saver.save(sess, checkpoint_path, global_step=e * data_loader.num_batches + b)
-                    final_model = '{}-{}'.format(model_name, e * data_loader.num_batches + b)
+                    saver.save(sess, checkpoint_path,
+                               global_step=e * data_loader.num_batches + b)
+                    final_model = '{}-{}'.format(model_name,
+                                                 e * data_loader.num_batches + b)
                     print("Model saved to {}!".format(checkpoint_path))
                     if args.total_time == 1:
                         print('Training time: ', time.time() - all_start)
@@ -181,7 +192,9 @@ def train(args):
     # get the vocab
     model_vocab = getModelVocab(args.save_checkpoints, model_name)
     # dump the checkpoints to javascript
-    dump_checkpoints(args.save_checkpoints, args.save_model, model_vocab, model_name, final_model)
+    dump_checkpoints(args.save_checkpoints, args.save_model,
+                     model_vocab, model_name, final_model)
+
 
 if __name__ == '__main__':
     main()
