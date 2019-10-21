@@ -52,6 +52,8 @@ def main():
                         help='RNN sequence length')
     parser.add_argument('--num_epochs', type=int, default=50,
                         help='number of epochs')
+    parser.add_argument('--print_every', type=int, default=1,
+                        help='print frequency')
     parser.add_argument('--save_every', type=int, default=1000,
                         help='save frequency')
     parser.add_argument('--grad_clip', type=float, default=5.,
@@ -64,6 +66,8 @@ def main():
                         help='probability of keeping weights in the hidden layer')
     parser.add_argument('--input_keep_prob', type=float, default=1.0,
                         help='probability of keeping weights in the input layer')
+    parser.add_argument('--total_time', type=int, default=0,
+                        help='print the total time spent on training')
     parser.add_argument('--init_from', type=str, default=None,
                         help="""continue training from saved model at this path. Path must contain files saved by previous training process:
                             'config.pkl'        : configuration;
@@ -84,6 +88,7 @@ def getModelVocab(path, model_name):
 
 
 def train(args):
+    all_start = time.time()
     model_name = re.split('[/.]', args.data_path)[-2]
     # make a dir to store checkpoints
     args.save_dir = os.path.join(args.save_checkpoints, model_name)
@@ -160,10 +165,11 @@ def train(args):
                 writer.add_summary(summ, e * data_loader.num_batches + b)
 
                 end = time.time()
-                print("{}/{} (epoch {}), train_loss = {:.3f}, time/batch = {:.3f}"
-                      .format(e * data_loader.num_batches + b,
-                              args.num_epochs * data_loader.num_batches,
-                              e, train_loss, end - start))
+                if (e * data_loader.num_batches + b) % args.print_every == 0:
+                    print("{}/{} (epoch {}), train_loss = {:.3f}, time/batch = {:.3f}"
+                          .format(e * data_loader.num_batches + b,
+                                  args.num_epochs * data_loader.num_batches,
+                                  e, train_loss, end - start))
 
                 if (e * data_loader.num_batches + b) % args.save_every == 0\
                         or (e == args.num_epochs-1 and b == data_loader.num_batches-1):
@@ -180,6 +186,8 @@ def train(args):
                     final_model = '{}-{}'.format(model_name,
                                                  e * data_loader.num_batches + b)
                     print("Model saved to {}!".format(checkpoint_path))
+                    if args.total_time == 1:
+                        print('Training time: ', time.time() - all_start)
 
     # get the vocab
     model_vocab = getModelVocab(args.save_checkpoints, model_name)
