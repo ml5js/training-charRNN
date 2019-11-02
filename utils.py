@@ -13,14 +13,15 @@ class TextLoader():
 
         input_file = os.path.join(data_dir)
         input_dir = os.path.dirname(input_file)
-        vocab_file = os.path.join(input_dir, "vocab.pkl")
-        tensor_file = os.path.join(input_dir, "data.npy")
+        input_file_name = os.path.split(input_file)[-1].split('.')[0]
+        vocab_file = os.path.join(input_dir, input_file_name + ".pkl")
+        tensor_file = os.path.join(input_dir, input_file_name + ".npy")
 
         if not (os.path.exists(vocab_file) and os.path.exists(tensor_file)):
             print("Here we go! Reading text file...")
             self.preprocess(input_file, vocab_file, tensor_file)
         else:
-            print("Loading preprocessed files")
+            print("Loading preprocessed files...")
             self.load_preprocessed(vocab_file, tensor_file)
         self.create_batches()
         self.reset_batch_pointer()
