@@ -4,7 +4,9 @@ Multi-layer Recurrent Neural Networks (LSTM, RNN) for character-level language m
 
 Based on [char-rnn-tensorflow](https://github.com/sherjilozair/char-rnn-tensorflow).
 
-[Here](https://www.youtube.com/watch?v=xfuVcfwtEyw) is a video to help you get started with training charRNN with [Spell](https://www.spell.run/)
+- **[Blog post describing how to train and use an LSTM network in ml5.js](https://blog.paperspace.com/training-an-lstm-and-using-the-model-in-ml5-js/)**.
+- **[Video showing how to train an LSTM network using Spell and ml5.js](https://youtu.be/xfuVcfwtEyw)** to generate text in the style of a particular author.
+
 
 ## Requirements
 
@@ -78,27 +80,29 @@ That's it!
 
 Given the size of the training dataset, here are some hyperparameters that might work:
 
-* 2 MB:
-   - rnn_size 256 (or 128)
-   - layers 2
-   - seq_length 64
-   - batch_size 32
-   - dropout 0.25
-* 5-8 MB:
-  - rnn_size 512
-  - layers 2 (or 3)
-  - seq_length 128
-  - batch_size 64
+* 2 MB: 
+   - rnn_size 256 (or 128) 
+   - num_layers 2 
+   - seq_length 64 
+   - batch_size 32 
+   - output_keep_prob 0.75 
+* 5-8 MB: 
+  - rnn_size 512 
+  - num_layers 2 (or 3) 
+  - seq_length 128 
+  - batch_size 64 
   - dropout 0.25
-* 10-20 MB:
-  - rnn_size 1024
-  - layers 2 (or 3)
-  - seq_length 128 (or 256)
-  - batch_size 128
-  - dropout 0.25
-* 25+ MB:
-  - rnn_size 2048
-  - layers 2 (or 3)
-  - seq_length 256 (or 128)
-  - batch_size 128
-  - dropout 0.25
+* 10-20 MB: 
+  - rnn_size 1024 
+  - num_layers 2 (or 3) 
+  - seq_length 128 (or 256) 
+  - batch_size 128 
+  - output_keep_prob 0.75 
+* 25+ MB: 
+  - rnn_size 2048 
+  - num_layers 2 (or 3) 
+  - seq_length 256 (or 128) 
+  - batch_size 128 
+  - output_keep_prob 0.75
+  
+Note: output_keep_prob 0.75 is equivalent to dropout probability of 0.25.
