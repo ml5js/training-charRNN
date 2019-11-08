@@ -7,14 +7,14 @@ import numpy as np
 
 class TextLoader():
     def __init__(self, data_dir, batch_size, seq_length, encoding='utf-8'):
-        self.data_dir = data_dir
         self.batch_size = batch_size
         self.seq_length = seq_length
         self.encoding = encoding
 
-        input_file = os.path.join(data_dir, "input.txt")
-        vocab_file = os.path.join(data_dir, "vocab.pkl")
-        tensor_file = os.path.join(data_dir, "data.npy")
+        input_file = os.path.join(data_dir)
+        input_dir = os.path.dirname(input_file)
+        vocab_file = os.path.join(input_dir, "vocab.pkl")
+        tensor_file = os.path.join(input_dir, "data.npy")
 
         if not (os.path.exists(vocab_file) and os.path.exists(tensor_file)):
             print("Here we go! Reading text file...")
@@ -56,7 +56,8 @@ class TextLoader():
         if self.num_batches == 0:
             assert False, "Not enough data. Make seq_length and batch_size small."
 
-        self.tensor = self.tensor[:self.num_batches * self.batch_size * self.seq_length]
+        self.tensor = self.tensor[:self.num_batches *
+                                  self.batch_size * self.seq_length]
         xdata = self.tensor
         ydata = np.copy(self.tensor)
         ydata[:-1] = xdata[1:]
