@@ -14,8 +14,9 @@ class TextLoader():
         input_file = os.path.join(data_dir)
         input_dir = os.path.dirname(input_file)
         input_file_name = os.path.split(input_file)[-1].split('.')[0]
-        vocab_file = os.path.join(input_dir, input_file_name + ".pkl")
-        tensor_file = os.path.join(input_dir, input_file_name + ".npy")
+        os.mkdir('textloader/')
+        vocab_file = os.path.join('textloader/', input_file_name + "_vocab.pkl")
+        tensor_file = os.path.join('textloader/', input_file_name + "_tensor.npy")
 
         if not (os.path.exists(vocab_file) and os.path.exists(tensor_file)):
             print("Here we go! Reading text file...")
