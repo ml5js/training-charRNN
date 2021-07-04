@@ -40,7 +40,7 @@ $ python train.py --data_path /path/to/data/file.txt
 Optionally, you can specify the hyperparameters you want depending on the training set, size of your data, etc:
 
 ```bash
-python train.py --data_path=./data \
+python train.py --data_path ./data \
 --rnn_size 128 \
 --num_layers 2 \
 --seq_length 50 \
