@@ -75,7 +75,7 @@ Given the size of the training dataset, here are some hyperparameters that might
   - num_layers 2 (or 3)
   - seq_length 128
   - batch_size 64
-  - dropout 0.25
+  - output_keep_prob 0.75
 - 10-20 MB:
   - rnn_size 1024
   - num_layers 2 (or 3)
