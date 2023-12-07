@@ -5,3 +5,4 @@ logs/
 textloader/
 __pycache__
 /checkpoints
+/models
