@@ -1,1 +1,8 @@
 /bronte
+/venv
+data/
+logs/
+textloader/
+__pycache__
+/checkpoints
+/models
